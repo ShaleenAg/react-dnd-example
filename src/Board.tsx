@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react'
 import { BoardSquare } from './BoardSquare'
 import type { Game, Position } from './Game'
 import { Piece } from './Piece'
-
+import Dummy from './Dummy'
+import {Menu, MenuItem, Button} from "@mui/material"
 export interface BoardProps {
   game: Game
 }
@@ -27,6 +28,7 @@ export const Board: FC<BoardProps> = ({ game }) => {
   const [[knightX, knightY], setKnightPos] = useState<Position>(
     game.knightPosition,
   )
+  const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   useEffect(() => game.observe(setKnightPos))
 
   function renderSquare(i: number) {
@@ -38,8 +40,24 @@ export const Board: FC<BoardProps> = ({ game }) => {
         <BoardSquare x={x} y={y} game={game}>
           <Piece isKnight={x === knightX && y === knightY} />
         </BoardSquare>
+        <div className="menu">
+          <Button onClick={(event) => setMenuAnchor(event.currentTarget)}>Open Menu</Button>
+          <Menu
+          open={Boolean(menuAnchor)}
+          anchorEl={menuAnchor}
+          onClose={()=>setMenuAnchor(null)}
+          >
+            {Array(9)
+              .fill(0)
+              .map(() => (
+                <MenuItem>
+                  <Dummy />
+                </MenuItem>
+              ))}
+          </Menu>
+        </div>
       </div>
-    )
+    );
   }
 
   const squares = []
